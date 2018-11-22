@@ -20,3 +20,72 @@ T2 = 'Habe nun, ach! Philosophie, Juristerei und Medizin, Und leider auch Theolo
      'ergeben, Ob mir durch Geistes Kraft und Mund Nicht manch Geheimnis würde kund; Dass ich nicht mehr mit saurem ' \
      'Schweiss Zu sagen brauche, was ich nicht weiss; Dass ich erkenne, was die Welt Im Innersten zusammenhält, ' \
      'Schau alle Wirkenskraft und Samen, Und tu nicht mehr in Worten kramen.'
+
+
+def frequency_count(text):
+    frequency_table = {}
+    for i in text.lower():
+        if i not in frequency_table:
+            frequency_table[str(i)] = 1
+        else:
+            frequency_table[str(i)] = frequency_table[str(i)] + 1
+    frequency_table = sorted([(v, k) for k, v in frequency_table.items()])
+    return frequency_table
+
+
+def build_tree(text):
+    forest = frequency_count(text)
+    while len(forest) > 1:
+        node = [forest[0][0] + forest[1][0], [forest.pop(0), forest.pop(0)]]
+        for i in forest:
+            if node[0] > i[0]:
+                pass
+            else:
+                index = i[0]
+                break
+        forest.insert(index, node)
+    return forest
+
+
+def climb_tree(forest):
+    code = str()
+    dictionary = {}
+
+    def right_step(branch, code):
+        branch = branch[0][1]
+        code = code + str(1)
+        if type(branch) == str:
+            nonlocal dictionary
+            dictionary[branch] = code
+        else:
+            right_step(branch, code)
+            left_step(branch, code)
+
+    def left_step(branch, code):
+        branch = branch[1][1]
+        code = code + str(0)
+        if type(branch) == str:
+            nonlocal dictionary
+            dictionary[branch] = code
+        else:
+            right_step(branch, code)
+            left_step(branch, code)
+
+    right_step(forest, code)
+    return dictionary
+
+
+def huffman(text):
+    dictionary = climb_tree(build_tree(text))
+    encoded_text = str()
+    for character in text.lower():
+        encoded_text += dictionary[character]
+    return encoded_text
+
+
+print(climb_tree(build_tree(T1)))
+print(huffman(T1))
+print(climb_tree(build_tree(T2)))
+print(huffman(T2))
+
+
