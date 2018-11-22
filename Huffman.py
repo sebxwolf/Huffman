@@ -59,17 +59,17 @@ depends only of the length of the alphabet and thus is fixed.
 
 
 def build_tree(text):
-    forest = frequency_count(text)
-    while len(forest) > 1:
-        node = [forest[0][0] + forest[1][0], [forest.pop(0), forest.pop(0)]]
-        for i in forest:
-            if node[0] > i[0]:
+    tree = frequency_count(text)
+    while len(tree) > 1:
+        node = [tree[0][0] + tree[1][0], [tree.pop(0), tree.pop(0)]]
+        for i in range(len(tree)):
+            if node[0] > tree[i][0]:
                 pass
             else:
-                index = i[0]
+                index = i
                 break
-        forest.insert(index, node)
-    return forest
+        tree.insert(index, node)
+    return tree
 
 
 '''
@@ -89,7 +89,7 @@ is fixed.
 
 
 def climb_tree(text):
-    tree = build_tree(text)
+    tree = build_tree(text)[0][1]
     code = str()
     dictionary = {}
 
